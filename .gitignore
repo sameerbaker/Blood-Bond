@@ -1,0 +1,61 @@
+## .NET / Visual Studio
+bin/
+obj/
+*.user
+*.suo
+*.userprefs
+*.cachefile
+*.dbmdl
+*.nupkg
+.vs/
+.idea/
+.vscode/
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Ll]og/
+[Oo]bj/
+[Ll]ogs/
+[Oo]ut/
+
+## NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+*.lock.json
+
+## Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.coverage
+coverage*.xml
+coverage*.json
+*.coveragexml
+
+## Publish / output
+publish/
+*.pubxml
+*.pubxml.user
+*.publishproj
+PublishProfiles/
+
+## ASP.NET Core
+appsettings.*.local.json
+secrets.json
+
+## OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+## Tooling
+*.swp
+*.swo
+*~
