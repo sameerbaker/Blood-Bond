@@ -8,6 +8,7 @@ using BloodBond.DAL.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace BloodBond.Controllers
 {
@@ -28,6 +29,7 @@ namespace BloodBond.Controllers
 
         /// <summary>Register a new user. Assigns the default "User" role.</summary>
         [HttpPost("register")]
+        [EnableRateLimiting("auth")]
         public async Task<ActionResult<RegisterResponse>> Register([FromBody] RegisterRequest request)
         {
             var response = await _authService.RegisterAsync(request);
@@ -36,6 +38,7 @@ namespace BloodBond.Controllers
 
         /// <summary>Login and receive a JWT.</summary>
         [HttpPost("login")]
+        [EnableRateLimiting("auth")]
         public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest request)
         {
             var response = await _authService.LoginAsync(request);

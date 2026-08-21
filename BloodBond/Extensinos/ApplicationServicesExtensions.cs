@@ -20,6 +20,10 @@ namespace BloodBond.Extensinos
             services.AddScoped<IDonationRepository, DonationRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IMonetaryDonationRepository, MonetaryDonationRepository>();
+            services.AddScoped<IBloodBankRatingRepository, BloodBankRatingRepository>();
+            services.AddScoped<IBadgeRepository, BadgeRepository>();
+            services.AddScoped<IBloodDriveEventRepository, BloodDriveEventRepository>();
+            services.AddScoped<IEventAttendanceRepository, EventAttendanceRepository>();
 
             // Application services
             services.AddScoped<IAuthenticationService, AuthenticationService>();
@@ -30,6 +34,13 @@ namespace BloodBond.Extensinos
             services.AddScoped<IDonationService, DonationService>();
             services.AddScoped<IUserManagementService, UserManagementService>();
             services.AddScoped<IMonetaryDonationService, MonetaryDonationService>();
+            services.AddScoped<IBloodBankRatingService, BloodBankRatingService>();
+            services.AddScoped<IBadgeService, BadgeService>();
+            services.AddScoped<IBloodDriveEventService, BloodDriveEventService>();
+
+            // Seeders
+            services.AddScoped<ISeedData, RoleSeedData>();
+            services.AddScoped<ISeedData, BadgeSeedData>();
 
             // Stripe settings (bind from config)
             services.Configure<StripeSettings>(options =>
@@ -39,9 +50,6 @@ namespace BloodBond.Extensinos
                 options.PublishableKey = config["Stripe:PublishableKey"] ?? "";
                 options.WebhookSecret = config["Stripe:WebhookSecret"] ?? "";
             });
-
-            // Seeders
-            services.AddScoped<ISeedData, RoleSeedData>();
 
             // Mapster mappings
             MapsterConfig.RegisterMappings();

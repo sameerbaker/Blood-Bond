@@ -1,0 +1,637 @@
+{
+  "info": {
+    "name": "BloodBond API — Full Collection",
+    "_postman_id": "bloodbond-2026-08-15",
+    "description": "Complete API collection for the BloodBond smart blood donation network. Includes 55 endpoints across 7 modules. Use the 'Set Tokens' folder to log in — tokens are automatically captured by the test scripts in each request and stored in the collection variables for reuse.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://localhost:7000", "type": "string" },
+    { "key": "adminToken", "value": "", "type": "string" },
+    { "key": "donorToken", "value": "", "type": "string" },
+    { "key": "requesterToken", "value": "", "type": "string" },
+    { "key": "adminSecretKey", "value": "CHANGE_THIS_TO_A_LONG_RANDOM_STRING_BEFORE_PRODUCTION", "type": "string" },
+    { "key": "bankId", "value": "1", "type": "string" },
+    { "key": "requestId", "value": "1", "type": "string" },
+    { "key": "donationId", "value": "1", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "🔐 1. Auth & Account",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/account/register", "host": ["{{baseUrl}}"], "path": ["api", "account", "register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Postman Test User\",\n  \"email\": \"postman.test@example.com\",\n  \"password\": \"Postman@1234\",\n  \"confirmPassword\": \"Postman@1234\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login (Admin — Default)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/account/login", "host": ["{{baseUrl}}"], "path": ["api", "account", "login"] },
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@bloodbond.com\",\n  \"password\": \"Admin@123456\"\n}" },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "if (pm.response.code === 200) {",
+                    "  var json = pm.response.json();",
+                    "  pm.collectionVariables.set('adminToken', json.token);",
+                    "  console.log('Admin token saved');",
+                    "}"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "Login (Donor)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/account/login", "host": ["{{baseUrl}}"], "path": ["api", "account", "login"] },
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"donor.test@bloodbond.com\",\n  \"password\": \"NewPassword@2026\"\n}" },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "if (pm.response.code === 200) {",
+                    "  var json = pm.response.json();",
+                    "  pm.collectionVariables.set('donorToken', json.token);",
+                    "  console.log('Donor token saved');",
+                    "}"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "Get Me",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{donorToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/account/me", "host": ["{{baseUrl}}"], "path": ["api", "account", "me"] }
+          }
+        },
+        {
+          "name": "Forgot Password (Dev Mode — Returns Token)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/account/forgot-password", "host": ["{{baseUrl}}"], "path": ["api", "account", "forgot-password"] },
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"donor.test@bloodbond.com\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👑 2. Admin",
+      "item": [
+        {
+          "name": "Register First Admin (Bootstrap)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/register-first", "host": ["{{baseUrl}}"], "path": ["api", "admin", "register-first"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"secretKey\": \"{{adminSecretKey}}\",\n  \"fullName\": \"Bootstrap Admin\",\n  \"email\": \"bootstrap.admin@bloodbond.com\",\n  \"password\": \"Bootstrap@2026\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Create User (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/admin/create", "host": ["{{baseUrl}}"], "path": ["api", "admin", "create"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Test Manager\",\n  \"email\": \"test.manager@example.com\",\n  \"password\": \"Manager@123\",\n  \"role\": \"BloodBankManager\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Change Own Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/admin/change-password", "host": ["{{baseUrl}}"], "path": ["api", "admin", "change-password"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"Admin@123456\",\n  \"newPassword\": \"Admin@123456\",\n  \"confirmPassword\": \"Admin@123456\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List All Users",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/users", "host": ["{{baseUrl}}"], "path": ["api", "admin", "users"] }
+          }
+        },
+        {
+          "name": "Get Specific User",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/users/4b61c196-9d91-4de4-a519-86552a61c057", "host": ["{{baseUrl}}"], "path": ["api", "admin", "users", "4b61c196-9d91-4de4-a519-86552a61c057"] }
+          }
+        },
+        {
+          "name": "Block User",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/users/USER_ID_HERE/block", "host": ["{{baseUrl}}"], "path": ["api", "admin", "users", "USER_ID_HERE", "block"] }
+          }
+        },
+        {
+          "name": "Unblock User",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/users/USER_ID_HERE/unblock", "host": ["{{baseUrl}}"], "path": ["api", "admin", "users", "USER_ID_HERE", "unblock"] }
+          }
+        },
+        {
+          "name": "Change User Role",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/admin/users/USER_ID_HERE/role", "host": ["{{baseUrl}}"], "path": ["api", "admin", "users", "USER_ID_HERE", "role"] },
+            "body": { "mode": "raw", "raw": "{\n  \"role\": \"User\"\n}" }
+          }
+        },
+        {
+          "name": "📊 System Analytics Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/analytics", "host": ["{{baseUrl}}"], "path": ["api", "admin", "analytics"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏥 3. Blood Banks & Inventory",
+      "item": [
+        {
+          "name": "List All Banks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/bloodbanks", "host": ["{{baseUrl}}"], "path": ["api", "bloodbanks"] }
+          }
+        },
+        {
+          "name": "List Verified Banks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/bloodbanks/verified", "host": ["{{baseUrl}}"], "path": ["api", "bloodbanks", "verified"] }
+          }
+        },
+        {
+          "name": "Get Bank By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/bloodbanks/{{bankId}}", "host": ["{{baseUrl}}"], "path": ["api", "bloodbanks", "{{bankId}}"] }
+          }
+        },
+        {
+          "name": "🚨 Low Stock Alerts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/bloodbanks/low-stock", "host": ["{{baseUrl}}"], "path": ["api", "bloodbanks", "low-stock"] }
+          }
+        },
+        {
+          "name": "Create Blood Bank (Donor → Manager)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{donorToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/bloodbanks", "host": ["{{baseUrl}}"], "path": ["api", "bloodbanks"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Test Bank\",\n  \"cityAddress\": \"Test St, Ramallah\",\n  \"latitude\": 31.9038,\n  \"longitude\": 35.2030,\n  \"contactPhone\": \"+970599000000\"\n}"
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "if (pm.response.code === 200) {",
+                    "  pm.collectionVariables.set('bankId', pm.response.json().id);",
+                    "  console.log('Bank ID saved: ' + pm.response.json().id);",
+                    "}"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "Get My Bank (Manager)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{donorToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/bloodbanks/mine", "host": ["{{baseUrl}}"], "path": ["api", "bloodbanks", "mine"] }
+          }
+        },
+        {
+          "name": "Update Bank (Manager)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{donorToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/bloodbanks/{{bankId}}", "host": ["{{baseUrl}}"], "path": ["api", "bloodbanks", "{{bankId}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Test Bank (Updated)\",\n  \"cityAddress\": \"New Address, Ramallah\",\n  \"latitude\": 31.9038,\n  \"longitude\": 35.2030,\n  \"contactPhone\": \"+970599000000\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Set Inventory (Manager)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{donorToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/bloodbanks/{{bankId}}/inventory", "host": ["{{baseUrl}}"], "path": ["api", "bloodbanks", "{{bankId}}", "inventory"] },
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  { \"bloodType\": 0, \"unitsAvailable\": 10 },\n  { \"bloodType\": 1, \"unitsAvailable\": 3 },\n  { \"bloodType\": 6, \"unitsAvailable\": 8 }\n]"
+            }
+          }
+        },
+        {
+          "name": "Approve Bank (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/bloodbanks/{{bankId}}/approve", "host": ["{{baseUrl}}"], "path": ["api", "bloodbanks", "{{bankId}}", "approve"] }
+          }
+        },
+        {
+          "name": "Reject Bank (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/bloodbanks/{{bankId}}/reject", "host": ["{{baseUrl}}"], "path": ["api", "bloodbanks", "{{bankId}}", "reject"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🩸 4. Blood Requests & Matching",
+      "item": [
+        {
+          "name": "Create Blood Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{requesterToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/bloodrequests", "host": ["{{baseUrl}}"], "path": ["api", "bloodrequests"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bloodType\": 0,\n  \"unitsNeeded\": 2,\n  \"urgencyLevel\": 2,\n  \"city\": \"Ramallah\",\n  \"notes\": \"Urgent need\"\n}"
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "if (pm.response.code === 200) {",
+                    "  pm.collectionVariables.set('requestId', pm.response.json().id);",
+                    "}"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "Get My Requests",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{requesterToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/bloodrequests/mine", "host": ["{{baseUrl}}"], "path": ["api", "bloodrequests", "mine"] }
+          }
+        },
+        {
+          "name": "Get Active Requests By City (Smart Matching)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/bloodrequests/active?city=Ramallah", "host": ["{{baseUrl}}"], "path": ["api", "bloodrequests", "active"], "query": [{ "key": "city", "value": "Ramallah" }] }
+          }
+        },
+        {
+          "name": "Get Request By ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{requesterToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/bloodrequests/{{requestId}}", "host": ["{{baseUrl}}"], "path": ["api", "bloodrequests", "{{requestId}}"] }
+          }
+        },
+        {
+          "name": "Cancel Request",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{requesterToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/bloodrequests/{{requestId}}/cancel", "host": ["{{baseUrl}}"], "path": ["api", "bloodrequests", "{{requestId}}", "cancel"] }
+          }
+        },
+        {
+          "name": "Fulfill Request (Manager/Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{donorToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/bloodrequests/{{requestId}}/fulfill", "host": ["{{baseUrl}}"], "path": ["api", "bloodrequests", "{{requestId}}", "fulfill"] }
+          }
+        },
+        {
+          "name": "Re-notify Compatible Donors",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/bloodrequests/{{requestId}}/notify", "host": ["{{baseUrl}}"], "path": ["api", "bloodrequests", "{{requestId}}", "notify"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "💉 5. Donations & Eligibility",
+      "item": [
+        {
+          "name": "Eligibility Check (Passing)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{donorToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/eligibility", "host": ["{{baseUrl}}"], "path": ["api", "eligibility"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"weight\": 75,\n  \"age\": 28,\n  \"hasChronicDisease\": false,\n  \"lastSurgeryDate\": null\n}"
+            }
+          }
+        },
+        {
+          "name": "Eligibility Check (Should Fail — Underage)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{donorToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/eligibility", "host": ["{{baseUrl}}"], "path": ["api", "eligibility"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"weight\": 75,\n  \"age\": 16,\n  \"hasChronicDisease\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Latest Eligibility",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{donorToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/eligibility/latest", "host": ["{{baseUrl}}"], "path": ["api", "eligibility", "latest"] }
+          }
+        },
+        {
+          "name": "Schedule Donation",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{donorToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/donations", "host": ["{{baseUrl}}"], "path": ["api", "donations"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bloodBankId\": 1,\n  \"scheduledDate\": \"2026-12-15T10:00:00\",\n  \"notes\": \"Test donation from Postman\"\n}"
+            },
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "type": "text/javascript",
+                  "exec": [
+                    "if (pm.response.code === 200) {",
+                    "  pm.collectionVariables.set('donationId', pm.response.json().id);",
+                    "}"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "Get My Donations",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{donorToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/donations/mine", "host": ["{{baseUrl}}"], "path": ["api", "donations", "mine"] }
+          }
+        },
+        {
+          "name": "Get Bank Donations (Manager)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{donorToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/donations/by-bank/{{bankId}}", "host": ["{{baseUrl}}"], "path": ["api", "donations", "by-bank", "{{bankId}}"] }
+          }
+        },
+        {
+          "name": "Approve Donation (Manager)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{donorToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/donations/{{donationId}}/approve", "host": ["{{baseUrl}}"], "path": ["api", "donations", "{{donationId}}", "approve"] }
+          }
+        },
+        {
+          "name": "Complete Donation (Manager — Awards Points + Updates Inventory)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{donorToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/donations/{{donationId}}/complete", "host": ["{{baseUrl}}"], "path": ["api", "donations", "{{donationId}}", "complete"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"unitsDonated\": 1,\n  \"notes\": \"Successful\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "⭐ 6. Ratings & Reviews",
+      "item": [
+        {
+          "name": "Add Rating (1-5 stars)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{donorToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/ratings", "host": ["{{baseUrl}}"], "path": ["api", "ratings"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bloodBankId\": 1,\n  \"rating\": 5,\n  \"comment\": \"Excellent service!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Bank Ratings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/ratings/by-bank/1", "host": ["{{baseUrl}}"], "path": ["api", "ratings", "by-bank", "1"] }
+          }
+        },
+        {
+          "name": "Get My Rating for a Bank",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{donorToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/ratings/mine/1", "host": ["{{baseUrl}}"], "path": ["api", "ratings", "mine", "1"] }
+          }
+        },
+        {
+          "name": "Get Bank Rating Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/ratings/stats/1", "host": ["{{baseUrl}}"], "path": ["api", "ratings", "stats", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏅 7. Badges & Gamification",
+      "item": [
+        {
+          "name": "Get All Badges",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/badges", "host": ["{{baseUrl}}"], "path": ["api", "badges"] }
+          }
+        },
+        {
+          "name": "Get My Earned Badges",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{donorToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/badges/mine", "host": ["{{baseUrl}}"], "path": ["api", "badges", "mine"] }
+          }
+        },
+        {
+          "name": "Get My Leaderboard Rank",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{donorToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/badges/me/rank", "host": ["{{baseUrl}}"], "path": ["api", "badges", "me", "rank"] }
+          }
+        },
+        {
+          "name": "Get Leaderboard (Top 10)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/badges/leaderboard?top=10", "host": ["{{baseUrl}}"], "path": ["api", "badges", "leaderboard"], "query": [{ "key": "top", "value": "10" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "💰 8. Stripe Monetary Donations",
+      "item": [
+        {
+          "name": "Create Stripe Checkout (Returns URL — Open in Browser)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{donorToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/monetarydonations/create-intent", "host": ["{{baseUrl}}"], "path": ["api", "monetarydonations", "create-intent"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 25.00,\n  \"currency\": \"usd\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get My Monetary Donations",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{donorToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/monetarydonations/mine", "host": ["{{baseUrl}}"], "path": ["api", "monetarydonations", "mine"] }
+          }
+        },
+        {
+          "name": "Get My Total Donated",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{donorToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/monetarydonations/total/mine", "host": ["{{baseUrl}}"], "path": ["api", "monetarydonations", "total", "mine"] }
+          }
+        },
+        {
+          "name": "Get Bank Monetary Donations (Manager)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{donorToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/monetarydonations/by-bank/{{bankId}}", "host": ["{{baseUrl}}"], "path": ["api", "monetarydonations", "by-bank", "{{bankId}}"] }
+          }
+        }
+      ]
+    }
+  ]
+}

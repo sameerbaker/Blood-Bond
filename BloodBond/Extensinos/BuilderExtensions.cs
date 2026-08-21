@@ -23,14 +23,21 @@ namespace BloodBond.Extensinos
             // Global exception handling should be the FIRST middleware.
             app.UseMiddleware<GlobalExceptionHandling>();
 
+            // Localization must come early so localized strings are picked up everywhere
+            app.UseBloodBondLocalization();
+
             if (env.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
+            // NOTE: UseHttpsRedirection disabled in dev so the HTTP listener on :5000
+            // works without losing the Authorization header on redirect.
+            // Enable again in production.
+            // app.UseHttpsRedirection();
             app.UseCors("BloodBondCors");
+            app.UseRateLimiter();
             app.UseAuthentication();
             app.UseAuthorization();
 

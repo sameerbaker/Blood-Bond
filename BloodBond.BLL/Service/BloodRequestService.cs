@@ -46,7 +46,15 @@ namespace BloodBond.BLL.Service
             await _requestRepo.AddAsync(entity);
             await _context.SaveChangesAsync();
 
-            await NotifyCompatibleDonorsAsync(entity.Id);
+            // Don't fail the request if notification dispatch has an issue
+            try
+            {
+                await NotifyCompatibleDonorsAsync(entity.Id);
+            }
+            catch
+            {
+                // Swallow — request itself was created successfully
+            }
 
             return await MapToResponseAsync(entity);
         }
@@ -112,13 +120,17 @@ namespace BloodBond.BLL.Service
             var request = await _requestRepo.GetByIdAsync(requestId);
             if (request == null) return 0;
 
-            var compatibleDonors = await _context.Users
+            // Filter what we can in SQL, then apply compatibility in memory
+            var candidates = await _context.Users
                 .AsNoTracking()
                 .Where(u => u.BloodType.HasValue
                             && u.City == request.City
-                            && !u.IsBlocked
-                            && BloodCompatibility.CanDonateTo(u.BloodType.Value, request.BloodType))
+                            && !u.IsBlocked)
                 .ToListAsync();
+
+            var compatibleDonors = candidates
+                .Where(u => BloodCompatibility.CanDonateTo(u.BloodType!.Value, request.BloodType))
+                .ToList();
 
             var notifType = request.UrgencyLevel == UrgencyLevel.Critical ? "Emergency" : "Request";
 

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Welcome" xml:space="preserve"><value>Welcome to BloodBond</value></data>
+  <data name="UserRegistered" xml:space="preserve"><value>User registered successfully</value></data>
+  <data name="UserLogin" xml:space="preserve"><value>Login successful</value></data>
+  <data name="InvalidCredentials" xml:space="preserve"><value>Invalid email or password</value></data>
+  <data name="AccountBlocked" xml:space="preserve"><value>This account has been blocked</value></data>
+  <data name="EmailExists" xml:space="preserve"><value>Email is already registered</value></data>
+  <data name="PasswordMismatch" xml:space="preserve"><value>Passwords do not match</value></data>
+  <data name="BloodBankCreated" xml:space="preserve"><value>Blood bank created successfully</value></data>
+  <data name="BloodBankUpdated" xml:space="preserve"><value>Blood bank updated successfully</value></data>
+  <data name="BloodBankApproved" xml:space="preserve"><value>Blood bank approved</value></data>
+  <data name="BloodBankRejected" xml:space="preserve"><value>Blood bank rejected</value></data>
+  <data name="NotFound" xml:space="preserve"><value>Resource not found</value></data>
+  <data name="Forbidden" xml:space="preserve"><value>You are not allowed to perform this action</value></data>
+  <data name="ValidationError" xml:space="preserve"><value>Validation error</value></data>
+  <data name="ServerError" xml:space="preserve"><value>An unexpected error occurred. Please try again later.</value></data>
+  <data name="LowStock" xml:space="preserve"><value>Low stock alert</value></data>
+  <data name="RequestCreated" xml:space="preserve"><value>Blood request created</value></data>
+  <data name="DonationScheduled" xml:space="preserve"><value>Donation scheduled successfully</value></data>
+  <data name="DonationCompleted" xml:space="preserve"><value>Donation completed. Thank you for saving lives!</value></data>
+  <data name="EligibilityPassed" xml:space="preserve"><value>Eligible to donate</value></data>
+  <data name="EligibilityFailed" xml:space="preserve"><value>Not eligible to donate</value></data>
+  <data name="RatingThanks" xml:space="preserve"><value>Thank you for your rating</value></data>
+  <data name="MonetaryThanks" xml:space="preserve"><value>Thank you for your monetary donation</value></data>
+  <data name="EventRegistered" xml:space="preserve"><value>Registered for the event</value></data>
+  <data name="EventCheckedIn" xml:space="preserve"><value>Checked in to the event</value></data>
+  <data name="BadgeEarned" xml:space="preserve"><value>You earned a new badge</value></data>
+  <data name="RateLimitExceeded" xml:space="preserve"><value>Too many requests. Please try again later.</value></data>
+  <data name="UrgencyLevelNormal" xml:space="preserve"><value>Normal</value></data>
+  <data name="UrgencyLevelUrgent" xml:space="preserve"><value>Urgent</value></data>
+  <data name="UrgencyLevelCritical" xml:space="preserve"><value>Critical</value></data>
+  <data name="BloodTypeAPpositive" xml:space="preserve"><value>A+</value></data>
+  <data name="BloodTypeANegative" xml:space="preserve"><value>A-</value></data>
+  <data name="BloodTypeBPositive" xml:space="preserve"><value>B+</value></data>
+  <data name="BloodTypeBNegative" xml:space="preserve"><value>B-</value></data>
+  <data name="BloodTypeABPositive" xml:space="preserve"><value>AB+</value></data>
+  <data name="BloodTypeABNegative" xml:space="preserve"><value>AB-</value></data>
+  <data name="BloodTypeOPositive" xml:space="preserve"><value>O+</value></data>
+  <data name="BloodTypeONegative" xml:space="preserve"><value>O-</value></data>
+</root>

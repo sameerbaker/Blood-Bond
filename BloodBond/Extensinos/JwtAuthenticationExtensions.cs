@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BloodBond.Extensinos
@@ -29,7 +30,23 @@ namespace BloodBond.Extensinos
                     ValidIssuer = configuration["Jwt:Issuer"],
                     ValidAudience = configuration["Jwt:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!))
+                        Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!)),
+                    // Allow mapping the default "role" claim from the JWT to
+                    // the ClaimTypes.Role used by [Authorize(Roles = "...")]
+                    RoleClaimType = System.Security.Claims.ClaimTypes.Role,
+                    NameClaimType = System.Security.Claims.ClaimTypes.NameIdentifier,
+                    ClockSkew = TimeSpan.FromMinutes(5)
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = ctx =>
+                    {
+                        var logger = ctx.HttpContext.RequestServices
+                            .GetRequiredService<ILoggerFactory>()
+                            .CreateLogger("JwtAuth");
+                        logger.LogError(ctx.Exception, "JWT validation failed: {Message}", ctx.Exception.Message);
+                        return Task.CompletedTask;
+                    }
                 };
             });
 

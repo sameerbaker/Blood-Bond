@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Welcome" xml:space="preserve"><value>مرحباً بك في BloodBond</value></data>
+  <data name="UserRegistered" xml:space="preserve"><value>تم تسجيل المستخدم بنجاح</value></data>
+  <data name="UserLogin" xml:space="preserve"><value>تم تسجيل الدخول بنجاح</value></data>
+  <data name="InvalidCredentials" xml:space="preserve"><value>البريد الإلكتروني أو كلمة المرور غير صحيحة</value></data>
+  <data name="AccountBlocked" xml:space="preserve"><value>هذا الحساب محظور</value></data>
+  <data name="EmailExists" xml:space="preserve"><value>البريد الإلكتروني مسجل مسبقاً</value></data>
+  <data name="PasswordMismatch" xml:space="preserve"><value>كلمات المرور غير متطابقة</value></data>
+  <data name="BloodBankCreated" xml:space="preserve"><value>تم إنشاء بنك الدم بنجاح</value></data>
+  <data name="BloodBankUpdated" xml:space="preserve"><value>تم تحديث بنك الدم بنجاح</value></data>
+  <data name="BloodBankApproved" xml:space="preserve"><value>تمت الموافقة على بنك الدم</value></data>
+  <data name="BloodBankRejected" xml:space="preserve"><value>تم رفض بنك الدم</value></data>
+  <data name="NotFound" xml:space="preserve"><value>المورد غير موجود</value></data>
+  <data name="Forbidden" xml:space="preserve"><value>غير مسموح لك بتنفيذ هذا الإجراء</value></data>
+  <data name="ValidationError" xml:space="preserve"><value>خطأ في التحقق من البيانات</value></data>
+  <data name="ServerError" xml:space="preserve"><value>حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى لاحقاً.</value></data>
+  <data name="LowStock" xml:space="preserve"><value>تنبيه: نقص في المخزون</value></data>
+  <data name="RequestCreated" xml:space="preserve"><value>تم إنشاء طلب الدم</value></data>
+  <data name="DonationScheduled" xml:space="preserve"><value>تم جدولة التبرع بنجاح</value></data>
+  <data name="DonationCompleted" xml:space="preserve"><value>تم إكمال التبرع. شكراً لك على إنقاذ الأرواح!</value></data>
+  <data name="EligibilityPassed" xml:space="preserve"><value>مؤهل للتبرع</value></data>
+  <data name="EligibilityFailed" xml:space="preserve"><value>غير مؤهل للتبرع</value></data>
+  <data name="RatingThanks" xml:space="preserve"><value>شكراً لتقييمك</value></data>
+  <data name="MonetaryThanks" xml:space="preserve"><value>شكراً لتبرعك المالي</value></data>
+  <data name="EventRegistered" xml:space="preserve"><value>تم التسجيل في الفعالية</value></data>
+  <data name="EventCheckedIn" xml:space="preserve"><value>تم تسجيل الحضور في الفعالية</value></data>
+  <data name="BadgeEarned" xml:space="preserve"><value>حصلت على شارة جديدة</value></data>
+  <data name="RateLimitExceeded" xml:space="preserve"><value>عدد كبير من الطلبات. يرجى المحاولة لاحقاً.</value></data>
+  <data name="UrgencyLevelNormal" xml:space="preserve"><value>عادي</value></data>
+  <data name="UrgencyLevelUrgent" xml:space="preserve"><value>عاجل</value></data>
+  <data name="UrgencyLevelCritical" xml:space="preserve"><value>حرج</value></data>
+  <data name="BloodTypeAPpositive" xml:space="preserve"><value>A موجب</value></data>
+  <data name="BloodTypeANegative" xml:space="preserve"><value>A سالب</value></data>
+  <data name="BloodTypeBPositive" xml:space="preserve"><value>B موجب</value></data>
+  <data name="BloodTypeBNegative" xml:space="preserve"><value>B سالب</value></data>
+  <data name="BloodTypeABPositive" xml:space="preserve"><value>AB موجب</value></data>
+  <data name="BloodTypeABNegative" xml:space="preserve"><value>AB سالب</value></data>
+  <data name="BloodTypeOPositive" xml:space="preserve"><value>O موجب</value></data>
+  <data name="BloodTypeONegative" xml:space="preserve"><value>O سالب</value></data>
+</root>

@@ -18,17 +18,20 @@ namespace BloodBond.BLL.Service
         private readonly IBloodBankRepository _bankRepo;
         private readonly IBloodInventoryRepository _inventoryRepo;
         private readonly ApplicationDbContext _context;
+        private readonly IBadgeService _badgeService;
 
         public DonationService(
             IDonationRepository donationRepo,
             IBloodBankRepository bankRepo,
             IBloodInventoryRepository inventoryRepo,
-            ApplicationDbContext context)
+            ApplicationDbContext context,
+            IBadgeService badgeService)
         {
             _donationRepo = donationRepo;
             _bankRepo = bankRepo;
             _inventoryRepo = inventoryRepo;
             _context = context;
+            _badgeService = badgeService;
         }
 
         public async Task<DonationResponse> ScheduleAsync(string donorId, DonationRequest request)
@@ -154,6 +157,17 @@ namespace BloodBond.BLL.Service
             }
 
             await _context.SaveChangesAsync();
+
+            // Award any new badges the donor qualifies for
+            try
+            {
+                await _badgeService.CheckAndAwardBadgesAsync(donation.DonorId);
+            }
+            catch
+            {
+                // Don't let a badge failure break the donation completion
+            }
+
             return MapToResponseSimple(donation);
         }
 

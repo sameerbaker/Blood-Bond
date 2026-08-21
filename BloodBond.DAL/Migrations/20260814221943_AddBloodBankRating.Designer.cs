@@ -4,6 +4,7 @@ using BloodBond.DAL.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BloodBond.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260814221943_AddBloodBankRating")]
+    partial class AddBloodBankRating
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -120,36 +123,6 @@ namespace BloodBond.DAL.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("BloodBond.DAL.Models.Badge", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<string>("Icon")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(80)
-                        .HasColumnType("nvarchar(80)");
-
-                    b.Property<int>("PointsRequired")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Badges");
-                });
-
             modelBuilder.Entity("BloodBond.DAL.Models.BloodBank", b =>
                 {
                     b.Property<int>("Id")
@@ -247,47 +220,6 @@ namespace BloodBond.DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("BloodBankRatings");
-                });
-
-            modelBuilder.Entity("BloodBond.DAL.Models.BloodDriveEvent", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BloodBankId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Capacity")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<DateTime>("EventDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BloodBankId");
-
-                    b.ToTable("BloodDriveEvents");
                 });
 
             modelBuilder.Entity("BloodBond.DAL.Models.BloodInventory", b =>
@@ -449,30 +381,6 @@ namespace BloodBond.DAL.Migrations
                     b.ToTable("EligibilityAnswers");
                 });
 
-            modelBuilder.Entity("BloodBond.DAL.Models.EventAttendance", b =>
-                {
-                    b.Property<int>("EventId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("CheckedInAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("RegisteredAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("EventId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("EventAttendances");
-                });
-
             modelBuilder.Entity("BloodBond.DAL.Models.MonetaryDonation", b =>
                 {
                     b.Property<int>("Id")
@@ -550,24 +458,6 @@ namespace BloodBond.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Notifications");
-                });
-
-            modelBuilder.Entity("BloodBond.DAL.Models.UserBadge", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("BadgeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("EarnedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("UserId", "BadgeId");
-
-                    b.HasIndex("BadgeId");
-
-                    b.ToTable("UserBadges");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -747,17 +637,6 @@ namespace BloodBond.DAL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BloodBond.DAL.Models.BloodDriveEvent", b =>
-                {
-                    b.HasOne("BloodBond.DAL.Models.BloodBank", "BloodBank")
-                        .WithMany()
-                        .HasForeignKey("BloodBankId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BloodBank");
-                });
-
             modelBuilder.Entity("BloodBond.DAL.Models.BloodInventory", b =>
                 {
                     b.HasOne("BloodBond.DAL.Models.BloodBank", "BloodBank")
@@ -817,25 +696,6 @@ namespace BloodBond.DAL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BloodBond.DAL.Models.EventAttendance", b =>
-                {
-                    b.HasOne("BloodBond.DAL.Models.BloodDriveEvent", "Event")
-                        .WithMany("Attendances")
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BloodBond.DAL.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Event");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("BloodBond.DAL.Models.MonetaryDonation", b =>
                 {
                     b.HasOne("BloodBond.DAL.Models.BloodBank", "BloodBank")
@@ -861,25 +721,6 @@ namespace BloodBond.DAL.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("BloodBond.DAL.Models.UserBadge", b =>
-                {
-                    b.HasOne("BloodBond.DAL.Models.Badge", "Badge")
-                        .WithMany()
-                        .HasForeignKey("BadgeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BloodBond.DAL.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Badge");
 
                     b.Navigation("User");
                 });
@@ -938,11 +779,6 @@ namespace BloodBond.DAL.Migrations
             modelBuilder.Entity("BloodBond.DAL.Models.BloodBank", b =>
                 {
                     b.Navigation("Inventory");
-                });
-
-            modelBuilder.Entity("BloodBond.DAL.Models.BloodDriveEvent", b =>
-                {
-                    b.Navigation("Attendances");
                 });
 #pragma warning restore 612, 618
         }

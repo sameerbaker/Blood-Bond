@@ -101,15 +101,29 @@ namespace BloodBond.BLL.Service
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var resetLink = $"{_configuration["App:ClientUrl"]}/reset-password?email={user.Email}&token={Uri.EscapeDataString(token)}";
 
-            await _emailSender.SendEmailAsync(
-                user.Email!,
-                "Reset your BloodBond password",
-                $"<p>Hello {user.FullName},</p><p>Click the link to reset your password:</p><a href='{resetLink}'>Reset Password</a>");
+            // Try to send the email. If SMTP is not configured or fails,
+            // we still return the token so the developer can use it directly
+            // (this is the "dev mode" fallback that keeps the endpoint usable).
+            bool emailSent = false;
+            try
+            {
+                await _emailSender.SendEmailAsync(
+                    user.Email!,
+                    "Reset your BloodBond password",
+                    $"<p>Hello {user.FullName},</p><p>Click the link to reset your password:</p><a href='{resetLink}'>Reset Password</a>");
+                emailSent = true;
+            }
+            catch
+            {
+                // SMTP not configured or unreachable — fall back to dev mode.
+            }
 
             return new ForgotPasswordResponse
             {
-                Message = "If the email exists, a reset link has been sent.",
-                ResetToken = token 
+                Message = emailSent
+                    ? "If the email exists, a reset link has been sent."
+                    : "Email delivery is not configured. Use the returned token directly (development mode).",
+                ResetToken = token
             };
         }
 

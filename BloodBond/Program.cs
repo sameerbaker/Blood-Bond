@@ -28,6 +28,12 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 // CORS
 builder.Services.AddCorsPolicy();
 
+// Rate Limiting (anti-spam / anti-abuse)
+builder.Services.AddRateLimiting();
+
+// Localization (English + Arabic via Accept-Language or ?lang=)
+builder.Services.AddBloodBondLocalization();
+
 // Application services (Repositories, BLL services, Seeders, Mapster)
 builder.Services.AddApplicationServices();
 
