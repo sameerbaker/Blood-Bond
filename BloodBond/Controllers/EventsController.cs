@@ -20,7 +20,6 @@ namespace BloodBond.Controllers
             _eventService = eventService;
         }
 
-        /// <summary>List upcoming events (anonymous).</summary>
         [HttpGet("upcoming")]
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<BloodDriveEventResponse>>> GetUpcoming()
@@ -38,7 +37,6 @@ namespace BloodBond.Controllers
             return Ok(ev);
         }
 
-        /// <summary>Create a blood drive event (Manager only).</summary>
         [HttpPost]
         [Authorize(Roles = "BloodBankManager,Admin")]
         public async Task<ActionResult<BloodDriveEventResponse>> Create([FromBody] BloodDriveEventRequest request)
@@ -67,7 +65,6 @@ namespace BloodBond.Controllers
             return NoContent();
         }
 
-        /// <summary>List events for a blood bank (Manager only).</summary>
         [HttpGet("by-bank/{bankId}")]
         [Authorize(Roles = "BloodBankManager,Admin")]
         public async Task<ActionResult<IEnumerable<BloodDriveEventResponse>>> GetByBank(int bankId)
@@ -77,7 +74,6 @@ namespace BloodBond.Controllers
             return Ok(list);
         }
 
-        /// <summary>Register to attend an event.</summary>
         [HttpPost("{id}/register")]
         [Authorize]
         public async Task<ActionResult<EventAttendanceResponse>> Register(int id)
@@ -87,7 +83,6 @@ namespace BloodBond.Controllers
             return Ok(result);
         }
 
-        /// <summary>Check in to an event (the user arrived).</summary>
         [HttpPost("{id}/checkin")]
         [Authorize]
         public async Task<ActionResult<EventAttendanceResponse>> CheckIn(int id)
@@ -97,7 +92,6 @@ namespace BloodBond.Controllers
             return Ok(result);
         }
 
-        /// <summary>Cancel my registration.</summary>
         [HttpPost("{id}/cancel")]
         [Authorize]
         public async Task<ActionResult<EventAttendanceResponse>> Cancel(int id)
@@ -107,7 +101,6 @@ namespace BloodBond.Controllers
             return Ok(result);
         }
 
-        /// <summary>List the attendees of an event (Manager only).</summary>
         [HttpGet("{id}/attendees")]
         [Authorize(Roles = "BloodBankManager,Admin")]
         public async Task<ActionResult<IEnumerable<EventAttendanceResponse>>> GetAttendees(int id)
@@ -117,7 +110,6 @@ namespace BloodBond.Controllers
             return Ok(list);
         }
 
-        /// <summary>List events I have registered for.</summary>
         [HttpGet("mine")]
         [Authorize]
         public async Task<ActionResult<IEnumerable<EventAttendanceResponse>>> GetMine()

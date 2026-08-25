@@ -18,7 +18,7 @@ namespace BloodBond.DAL.Models
         public string Message { get; set; } = string.Empty;
 
         [Required, MaxLength(50)]
-        public string Type { get; set; } = "Info"; // Info, Emergency, Request, Fulfilled, etc.
+        public string Type { get; set; } = "Info"; 
 
         public bool IsRead { get; set; } = false;
 

@@ -46,14 +46,12 @@ namespace BloodBond.BLL.Service
             await _requestRepo.AddAsync(entity);
             await _context.SaveChangesAsync();
 
-            // Don't fail the request if notification dispatch has an issue
             try
             {
                 await NotifyCompatibleDonorsAsync(entity.Id);
             }
             catch
             {
-                // Swallow — request itself was created successfully
             }
 
             return await MapToResponseAsync(entity);
@@ -120,7 +118,6 @@ namespace BloodBond.BLL.Service
             var request = await _requestRepo.GetByIdAsync(requestId);
             if (request == null) return 0;
 
-            // Filter what we can in SQL, then apply compatibility in memory
             var candidates = await _context.Users
                 .AsNoTracking()
                 .Where(u => u.BloodType.HasValue

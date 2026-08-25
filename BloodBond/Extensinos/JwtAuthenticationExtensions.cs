@@ -7,9 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace BloodBond.Extensinos
 {
-    /// <summary>
-    /// JWT Bearer authentication configuration.
-    /// </summary>
+    
     public static class JwtAuthenticationExtensions
     {
         public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
@@ -31,8 +29,7 @@ namespace BloodBond.Extensinos
                     ValidAudience = configuration["Jwt:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!)),
-                    // Allow mapping the default "role" claim from the JWT to
-                    // the ClaimTypes.Role used by [Authorize(Roles = "...")]
+                   
                     RoleClaimType = System.Security.Claims.ClaimTypes.Role,
                     NameClaimType = System.Security.Claims.ClaimTypes.NameIdentifier,
                     ClockSkew = TimeSpan.FromMinutes(5)

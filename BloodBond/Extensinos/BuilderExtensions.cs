@@ -7,15 +7,10 @@ using Microsoft.Extensions.Hosting;
 
 namespace BloodBond.Extensinos
 {
-    /// <summary>
-    /// Extension methods that finalize the request pipeline.
-    /// </summary>
+    
     public static class BuilderExtensions
     {
-        /// <summary>
-        /// Wires the full middleware pipeline. Returns IEndpointRouteBuilder
-        /// so callers can still chain endpoint mappings (e.g., MapControllers).
-        /// </summary>
+        
         public static IEndpointRouteBuilder UseBloodBondPipeline(
             this IApplicationBuilder app,
             IWebHostEnvironment env)
@@ -32,16 +27,12 @@ namespace BloodBond.Extensinos
                 app.UseSwaggerUI();
             }
 
-            // NOTE: UseHttpsRedirection disabled in dev so the HTTP listener on :5000
-            // works without losing the Authorization header on redirect.
-            // Enable again in production.
-            // app.UseHttpsRedirection();
+            
             app.UseCors("BloodBondCors");
             app.UseRateLimiter();
             app.UseAuthentication();
             app.UseAuthorization();
 
-            // MapControllers requires IEndpointRouteBuilder (provided by WebApplication).
             var endpoints = (IEndpointRouteBuilder)app;
             endpoints.MapControllers();
 

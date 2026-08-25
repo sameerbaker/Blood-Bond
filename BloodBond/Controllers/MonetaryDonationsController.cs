@@ -29,7 +29,6 @@ namespace BloodBond.Controllers
             _stripe = stripeOptions.Value;
         }
 
-        /// <summary>Create a Stripe PaymentIntent for a monetary donation.</summary>
         [HttpPost("create-intent")]
         public async Task<ActionResult<PaymentIntentResponse>> CreateIntent([FromBody] MonetaryDonationRequest request)
         {
@@ -38,7 +37,6 @@ namespace BloodBond.Controllers
             return Ok(result);
         }
 
-        /// <summary>Stripe webhook — receives payment status updates.</summary>
         [HttpPost("webhook")]
         [AllowAnonymous]
         public async Task<IActionResult> Webhook()
@@ -53,7 +51,6 @@ namespace BloodBond.Controllers
                     _stripe.WebhookSecret
                 );
 
-                // Handle the event
                 if (stripeEvent.Type == "payment_intent.succeeded")
                 {
                     var paymentIntent = stripeEvent.Data.Object as PaymentIntent;
@@ -79,7 +76,6 @@ namespace BloodBond.Controllers
             }
         }
 
-        /// <summary>Manual confirm (for testing without webhook).</summary>
         [HttpPost("confirm")]
         [AllowAnonymous]
         public async Task<ActionResult<MonetaryDonationResponse>> Confirm([FromQuery] string paymentIntentId, [FromQuery] string status)
@@ -88,12 +84,10 @@ namespace BloodBond.Controllers
             return Ok(result);
         }
 
-        /// <summary>Stripe Checkout success redirect.</summary>
         [HttpGet("success")]
         [AllowAnonymous]
         public async Task<ActionResult> Success([FromQuery] string session_id)
         {
-            // Update donation status to Succeeded
             if (!string.IsNullOrEmpty(session_id))
             {
                 await _donationService.ConfirmDonationAsync(session_id, "Succeeded");
@@ -105,7 +99,6 @@ namespace BloodBond.Controllers
             });
         }
 
-        /// <summary>Stripe Checkout cancel redirect.</summary>
         [HttpGet("cancel")]
         [AllowAnonymous]
         public IActionResult Cancel()
@@ -122,7 +115,6 @@ namespace BloodBond.Controllers
             return Ok(list);
         }
 
-        /// <summary>List donations for a specific blood bank (manager only).</summary>
         [HttpGet("by-bank/{bankId}")]
         [Authorize(Roles = "BloodBankManager,Admin")]
         public async Task<ActionResult<IEnumerable<MonetaryDonationResponse>>> GetByBank(int bankId)
@@ -132,7 +124,6 @@ namespace BloodBond.Controllers
             return Ok(list);
         }
 
-        /// <summary>Get total amount donated by the current user.</summary>
         [HttpGet("total/mine")]
         public async Task<ActionResult> GetMyTotal()
         {

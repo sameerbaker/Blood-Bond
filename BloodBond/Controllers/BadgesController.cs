@@ -20,7 +20,6 @@ namespace BloodBond.Controllers
             _badgeService = badgeService;
         }
 
-        /// <summary>List all available badges in the system.</summary>
         [HttpGet]
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<BadgeResponse>>> GetAll()
@@ -29,7 +28,6 @@ namespace BloodBond.Controllers
             return Ok(badges);
         }
 
-        /// <summary>List the badges the current user has earned.</summary>
         [HttpGet("mine")]
         [Authorize]
         public async Task<ActionResult<IEnumerable<UserBadgeResponse>>> GetMine()
@@ -39,7 +37,6 @@ namespace BloodBond.Controllers
             return Ok(badges);
         }
 
-        /// <summary>Get the current user's rank/profile on the leaderboard.</summary>
         [HttpGet("me/rank")]
         [Authorize]
         public async Task<ActionResult<LeaderboardEntryResponse>> GetMyRank()
@@ -50,7 +47,6 @@ namespace BloodBond.Controllers
             return Ok(rank);
         }
 
-        /// <summary>Get the global top donors leaderboard.</summary>
         [HttpGet("leaderboard")]
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<LeaderboardEntryResponse>>> GetLeaderboard([FromQuery] int top = 10)

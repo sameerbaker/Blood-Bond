@@ -16,7 +16,7 @@ namespace BloodBond.DAL.Models
         [MaxLength(50)]
         public string Icon { get; set; } = "🏅";
 
-        /// <summary>How many donation points are required to unlock this badge.</summary>
+        /// How many donation points are required to unlock this badge.
         [Range(0, int.MaxValue)]
         public int PointsRequired { get; set; }
     }

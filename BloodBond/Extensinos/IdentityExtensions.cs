@@ -4,9 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BloodBond.Extensinos
 {
-    /// <summary>
-    /// ASP.NET Core Identity registration with the ApplicationUser as the user type.
-    /// </summary>
+    
     public static class IdentityExtensions
     {
         public static IServiceCollection AddIdentityServices(this IServiceCollection services)
@@ -25,7 +23,6 @@ namespace BloodBond.Extensinos
             .AddEntityFrameworkStores<BloodBond.DAL.Data.ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
-            // Needed for IHttpContextAccessor inside ApplicationDbContext
             services.AddHttpContextAccessor();
 
             return services;

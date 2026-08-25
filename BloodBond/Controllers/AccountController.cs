@@ -27,7 +27,6 @@ namespace BloodBond.Controllers
             _userManager = userManager;
         }
 
-        /// <summary>Register a new user. Assigns the default "User" role.</summary>
         [HttpPost("register")]
         [EnableRateLimiting("auth")]
         public async Task<ActionResult<RegisterResponse>> Register([FromBody] RegisterRequest request)
@@ -36,7 +35,6 @@ namespace BloodBond.Controllers
             return Ok(response);
         }
 
-        /// <summary>Login and receive a JWT.</summary>
         [HttpPost("login")]
         [EnableRateLimiting("auth")]
         public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest request)
@@ -45,7 +43,6 @@ namespace BloodBond.Controllers
             return Ok(response);
         }
 
-        /// <summary>Request a password-reset email.</summary>
         [HttpPost("forgot-password")]
         public async Task<ActionResult<ForgotPasswordResponse>> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
@@ -53,7 +50,6 @@ namespace BloodBond.Controllers
             return Ok(response);
         }
 
-        /// <summary>Reset the password using the token from the email.</summary>
         [HttpPost("reset-password")]
         public async Task<ActionResult<ResetPasswordResponse>> ResetPassword([FromBody] ResetPasswordRequest request)
         {
@@ -61,7 +57,6 @@ namespace BloodBond.Controllers
             return Ok(response);
         }
 
-        /// <summary>Get the current authenticated user. Requires a valid JWT.</summary>
         [Authorize]
         [HttpGet("me")]
         public async Task<ActionResult> Me()

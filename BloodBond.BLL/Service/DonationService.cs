@@ -158,14 +158,12 @@ namespace BloodBond.BLL.Service
 
             await _context.SaveChangesAsync();
 
-            // Award any new badges the donor qualifies for
             try
             {
                 await _badgeService.CheckAndAwardBadgesAsync(donation.DonorId);
             }
             catch
             {
-                // Don't let a badge failure break the donation completion
             }
 
             return MapToResponseSimple(donation);

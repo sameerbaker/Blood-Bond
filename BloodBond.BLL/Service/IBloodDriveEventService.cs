@@ -14,7 +14,7 @@ namespace BloodBond.BLL.Service
         Task<BloodDriveEventResponse> UpdateAsync(int id, string managerId, BloodDriveEventRequest request);
         Task DeleteAsync(int id, string managerId);
 
-        // Attendance
+        
         Task<EventAttendanceResponse> RegisterAsync(int eventId, string userId);
         Task<EventAttendanceResponse> CheckInAsync(int eventId, string userId);
         Task<EventAttendanceResponse> CancelAsync(int eventId, string userId);

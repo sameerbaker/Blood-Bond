@@ -30,7 +30,6 @@ namespace BloodBond.Controllers
             return Ok(result);
         }
 
-        /// <summary>Get all ratings for a blood bank (anonymous).</summary>
         [HttpGet("by-bank/{bankId}")]
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<BloodBankRatingResponse>>> GetByBank(int bankId)
@@ -39,7 +38,6 @@ namespace BloodBond.Controllers
             return Ok(list);
         }
 
-        /// <summary>Get the current user's rating for a specific bank.</summary>
         [HttpGet("mine/{bankId}")]
         [Authorize]
         public async Task<ActionResult<BloodBankRatingResponse?>> GetMine(int bankId)
@@ -50,7 +48,6 @@ namespace BloodBond.Controllers
             return Ok(rating);
         }
 
-        /// <summary>Get rating stats (average + count) for a blood bank.</summary>
         [HttpGet("stats/{bankId}")]
         [AllowAnonymous]
         public async Task<ActionResult<BloodBankRatingStatsResponse>> GetStats(int bankId)

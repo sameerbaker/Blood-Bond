@@ -128,7 +128,6 @@ namespace BloodBond.BLL.Service
             if (existing != null)
                 throw new InvalidOperationException("You are already registered for this event.");
 
-            // Check capacity
             var currentCount = await _context.EventAttendances.CountAsync(a => a.EventId == eventId);
             if (currentCount >= ev.Capacity)
                 throw new InvalidOperationException("Event is at full capacity.");

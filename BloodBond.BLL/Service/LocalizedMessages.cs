@@ -4,20 +4,14 @@ using Microsoft.Extensions.Localization;
 
 namespace BloodBond.BLL.Service
 {
-    /// <summary>
-    /// Wraps IStringLocalizer with named keys so callers don't have to remember
-    /// resource string IDs. Also provides enum-to-display helpers for blood type
-    /// and urgency level, which are stored as numeric enums on the DB.
-    /// </summary>
+    
     public class LocalizedMessages
     {
         private readonly IStringLocalizer _localizer;
 
         public LocalizedMessages(IStringLocalizerFactory factory)
         {
-            // The actual .resx files live in BloodBond.UI/Resources/.
-            // We use a marker class name; ASP.NET resolves the assembly
-            // that owns that namespace.
+            
             _localizer = factory.Create("SharedResource", "BloodBond");
         }
 
@@ -25,7 +19,6 @@ namespace BloodBond.BLL.Service
 
         public string Get(string key) => _localizer[key];
 
-        // ---- Enum helpers ----
         public string GetBloodTypeName(BloodType type) => type switch
         {
             BloodType.APpositive => _localizer["BloodTypeAPpositive"],

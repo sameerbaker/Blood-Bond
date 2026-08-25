@@ -8,9 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BloodBond.Extensinos
 {
-    /// <summary>
-    /// Database-related extension methods: register DbContext, apply migrations, run seeders.
-    /// </summary>
+   
     public static class DatabaseExtensions
     {
         public static IServiceCollection AddDatabase(this IServiceCollection services, string connectionString)
@@ -31,7 +29,6 @@ namespace BloodBond.Extensinos
                 var context = services.GetRequiredService<ApplicationDbContext>();
                 await context.Database.MigrateAsync();
 
-                // Run all registered seeders
                 var seeders = services.GetServices<ISeedData>();
                 foreach (var seeder in seeders)
                 {

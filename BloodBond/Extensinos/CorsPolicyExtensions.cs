@@ -2,9 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BloodBond.Extensinos
 {
-    /// <summary>
-    /// CORS policy for the BloodBond API.
-    /// </summary>
+   
     public static class CorsPolicyExtensions
     {
         public static IServiceCollection AddCorsPolicy(this IServiceCollection services)

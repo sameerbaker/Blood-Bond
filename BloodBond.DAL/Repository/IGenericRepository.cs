@@ -5,10 +5,7 @@ using System.Threading.Tasks;
 
 namespace BloodBond.DAL.Repository
 {
-    /// <summary>
-    /// Generic repository contract. Provides common CRUD operations for any entity.
-    /// Specific repositories can extend this interface with custom queries.
-    /// </summary>
+   
     public interface IGenericRepository<T> where T : class
     {
         Task<T?> GetByIdAsync(string id);

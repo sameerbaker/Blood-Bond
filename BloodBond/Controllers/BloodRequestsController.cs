@@ -21,7 +21,6 @@ namespace BloodBond.Controllers
             _requestService = requestService;
         }
 
-        // Requester: create
         [HttpPost]
         public async Task<ActionResult<BloodRequestResponse>> Create([FromBody] BloodRequestRequest request)
         {
@@ -30,7 +29,6 @@ namespace BloodBond.Controllers
             return Ok(result);
         }
 
-        // Owner: get mine
         [HttpGet("mine")]
         public async Task<ActionResult<IEnumerable<BloodRequestResponse>>> GetMine()
         {
@@ -39,7 +37,6 @@ namespace BloodBond.Controllers
             return Ok(list);
         }
 
-        // Public active requests in a city (smart matching prep)
         [HttpGet("active")]
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<BloodRequestResponse>>> GetActive([FromQuery] string city)
@@ -74,7 +71,6 @@ namespace BloodBond.Controllers
             return Ok(result);
         }
 
-        // Re-notify compatible donors (admin/system)
         [HttpPost("{id}/notify")]
         [Authorize(Roles = "Admin,BloodBankManager")]
         public async Task<ActionResult> Notify(int id)

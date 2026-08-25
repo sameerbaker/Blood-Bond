@@ -40,7 +40,7 @@ builder.Services.AddApplicationServices();
 // -------------------- Pipeline --------------------
 var app = builder.Build();
 
-// Apply migrations and seed data (only on real startup, not at design time).
+// Apply migrations and seed data 
 if (!app.Environment.IsEnvironment("Testing"))
 {
     await app.ApplyMigrationsAndSeedAsync();

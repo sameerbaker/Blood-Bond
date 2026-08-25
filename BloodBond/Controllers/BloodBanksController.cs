@@ -25,7 +25,6 @@ namespace BloodBond.Controllers
             _userManager = userManager;
         }
 
-        // Public: list all verified blood banks
         [HttpGet]
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<BloodBankResponse>>> GetAll()
@@ -51,7 +50,6 @@ namespace BloodBond.Controllers
             return Ok(bank);
         }
 
-        // BloodBankManager: register a blood bank
         [HttpPost]
         [Authorize(Roles = "User,Admin")]
         public async Task<ActionResult<BloodBankResponse>> Create([FromBody] BloodBankRequest request)
@@ -68,7 +66,6 @@ namespace BloodBond.Controllers
             return Ok(bank);
         }
 
-        // BloodBankManager: my bank
         [HttpGet("mine")]
         [Authorize(Roles = "BloodBankManager,Admin")]
         public async Task<ActionResult<BloodBankResponse>> GetMine()
@@ -79,7 +76,6 @@ namespace BloodBond.Controllers
             return Ok(bank);
         }
 
-        // BloodBankManager: update own bank
         [HttpPut("{id}")]
         [Authorize(Roles = "BloodBankManager,Admin")]
         public async Task<ActionResult<BloodBankResponse>> Update(int id, [FromBody] BloodBankRequest request)
@@ -89,7 +85,6 @@ namespace BloodBond.Controllers
             return Ok(bank);
         }
 
-        // BloodBankManager: set inventory
         [HttpPut("{id}/inventory")]
         [Authorize(Roles = "BloodBankManager,Admin")]
         public async Task<ActionResult<BloodBankResponse>> SetInventory(int id, [FromBody] List<BloodInventoryRequest> items)
@@ -99,7 +94,6 @@ namespace BloodBond.Controllers
             return Ok(bank);
         }
 
-        // Admin: approve
         [HttpPatch("{id}/approve")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<BloodBankResponse>> Approve(int id)
@@ -108,7 +102,6 @@ namespace BloodBond.Controllers
             return Ok(bank);
         }
 
-        // Admin: reject
         [HttpPatch("{id}/reject")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<BloodBankResponse>> Reject(int id)

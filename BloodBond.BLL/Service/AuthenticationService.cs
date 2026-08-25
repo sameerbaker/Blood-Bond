@@ -101,9 +101,7 @@ namespace BloodBond.BLL.Service
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var resetLink = $"{_configuration["App:ClientUrl"]}/reset-password?email={user.Email}&token={Uri.EscapeDataString(token)}";
 
-            // Try to send the email. If SMTP is not configured or fails,
-            // we still return the token so the developer can use it directly
-            // (this is the "dev mode" fallback that keeps the endpoint usable).
+            
             bool emailSent = false;
             try
             {

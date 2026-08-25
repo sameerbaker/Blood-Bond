@@ -23,13 +23,11 @@ namespace BloodBond.Controllers
             _eligibilityService = eligibilityService;
         }
 
-        // Donor: schedule donation
         [HttpPost]
         public async Task<ActionResult<DonationResponse>> Schedule([FromBody] DonationRequest request)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Pre-check eligibility (must have passed)
             var latest = await _eligibilityService.GetLatestAsync(userId!);
             if (latest == null || !latest.Passed)
                 return BadRequest("You must pass the eligibility screening first. POST /api/eligibility");
@@ -38,7 +36,6 @@ namespace BloodBond.Controllers
             return Ok(result);
         }
 
-        // Donor: my donations
         [HttpGet("mine")]
         public async Task<ActionResult<IEnumerable<DonationResponse>>> GetMine()
         {
@@ -63,7 +60,6 @@ namespace BloodBond.Controllers
             return Ok(result);
         }
 
-        // BloodBankManager: list bank donations
         [HttpGet("by-bank/{bankId}")]
         [Authorize(Roles = "BloodBankManager,Admin")]
         public async Task<ActionResult<IEnumerable<DonationResponse>>> GetByBank(int bankId)
@@ -73,7 +69,6 @@ namespace BloodBond.Controllers
             return Ok(list);
         }
 
-        // BloodBankManager: approve
         [HttpPatch("{id}/approve")]
         [Authorize(Roles = "BloodBankManager,Admin")]
         public async Task<ActionResult<DonationResponse>> Approve(int id)
@@ -83,7 +78,6 @@ namespace BloodBond.Controllers
             return Ok(result);
         }
 
-        // BloodBankManager: reject
         [HttpPatch("{id}/reject")]
         [Authorize(Roles = "BloodBankManager,Admin")]
         public async Task<ActionResult<DonationResponse>> Reject(int id, [FromBody] CompleteDonationRequest? body)
@@ -93,7 +87,6 @@ namespace BloodBond.Controllers
             return Ok(result);
         }
 
-        // BloodBankManager: complete → updates inventory + donor points
         [HttpPatch("{id}/complete")]
         [Authorize(Roles = "BloodBankManager,Admin")]
         public async Task<ActionResult<DonationResponse>> Complete(int id, [FromBody] CompleteDonationRequest request)

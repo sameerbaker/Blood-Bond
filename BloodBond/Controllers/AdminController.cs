@@ -34,10 +34,10 @@ namespace BloodBond.Controllers
             _localizer = localizer;
         }
 
-        /// <summary>
+        
         /// Bootstrap the FIRST admin. Refuses if any admin already exists.
         /// Use this once when setting up a fresh database.
-        /// </summary>
+        
         [HttpPost("register-first")]
         [AllowAnonymous]
         [EnableRateLimiting("auth")]

@@ -5,9 +5,7 @@ using BloodBond.DAL.Models;
 
 namespace BloodBond.DAL.utils
 {
-    /// <summary>
-    /// Seeds the default badge set. Runs after role seeding.
-    /// </summary>
+
     public class BadgeSeedData : ISeedData
     {
         private readonly ApplicationDbContext _context;
@@ -20,7 +18,7 @@ namespace BloodBond.DAL.utils
         public async Task SeedAsync()
         {
             if (_context.Badges.Any())
-                return; // already seeded
+                return; 
 
             var badges = new[]
             {

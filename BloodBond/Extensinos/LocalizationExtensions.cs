@@ -5,10 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BloodBond.Extensinos
 {
-    /// <summary>
-    /// Configures multi-language support (English + Arabic).
-    /// Clients can request a language via the Accept-Language header (e.g. "ar" or "en").
-    /// </summary>
+    
     public static class LocalizationExtensions
     {
         public static IServiceCollection AddBloodBondLocalization(this IServiceCollection services)

@@ -110,18 +110,16 @@ namespace BloodBond.BLL.Service
             foreach (var badge in allBadges)
             {
                 if (earnedIds.Contains(badge.Id))
-                    continue; // already has it
+                    continue; 
 
                 bool qualifies = false;
                 if (badge.Name == "Patron")
                 {
-                    // Patron badge: made at least one successful monetary donation
                     qualifies = await _context.MonetaryDonations
                         .AnyAsync(m => m.DonorId == userId && m.Status == "Succeeded");
                 }
                 else
                 {
-                    // Points-based badges
                     qualifies = user.Points >= badge.PointsRequired;
                 }
 

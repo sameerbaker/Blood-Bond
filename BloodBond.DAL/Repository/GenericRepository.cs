@@ -8,9 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BloodBond.DAL.Repository
 {
-    /// <summary>
-    /// Generic implementation of IGenericRepository using EF Core.
-    /// </summary>
+    
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         protected readonly ApplicationDbContext _context;

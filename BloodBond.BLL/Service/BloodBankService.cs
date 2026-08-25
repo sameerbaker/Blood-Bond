@@ -149,7 +149,6 @@ namespace BloodBond.BLL.Service
 
             await _context.SaveChangesAsync();
 
-            // Reload bank with inventory
             var updated = await _bankRepo.GetByIdAsync(id);
             return MapToResponseSimple(updated!);
         }
