@@ -12,6 +12,7 @@ namespace BloodBond.BLL.Service
         Task<BloodRequestResponse?> GetByIdAsync(int id);
         Task<IEnumerable<BloodRequestResponse>> GetMineAsync(string requesterId);
         Task<IEnumerable<BloodRequestResponse>> GetActiveByCityAsync(string city);
+        Task<IEnumerable<BloodRequestResponse>> GetForBankAsync(int bankId, string managerId);
         Task<BloodRequestResponse> CancelAsync(int id, string requesterId);
         Task<BloodRequestResponse> MarkInProgressAsync(int id);     
         Task<BloodRequestResponse> MarkFulfilledAsync(int id);

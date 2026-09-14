@@ -7,6 +7,7 @@ using BloodBond.DAL.DTO.Request;
 using BloodBond.DAL.DTO.Response;
 using BloodBond.DAL.Models;
 using BloodBond.DAL.Repository;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Stripe;
@@ -19,17 +20,20 @@ namespace BloodBond.BLL.Service
         private readonly IBloodBankRepository _bankRepo;
         private readonly ApplicationDbContext _context;
         private readonly StripeSettings _stripe;
+        private readonly IHttpContextAccessor _http;
 
         public MonetaryDonationService(
             IMonetaryDonationRepository donationRepo,
             IBloodBankRepository bankRepo,
             ApplicationDbContext context,
-            IOptions<StripeSettings> stripeOptions)
+            IOptions<StripeSettings> stripeOptions,
+            IHttpContextAccessor http)
         {
             _donationRepo = donationRepo;
             _bankRepo = bankRepo;
             _context = context;
             _stripe = stripeOptions.Value;
+            _http = http;
         }
 
         public async Task<PaymentIntentResponse> CreatePaymentIntentAsync(string donorId, MonetaryDonationRequest request)
@@ -80,6 +84,15 @@ namespace BloodBond.BLL.Service
                 ? (await _bankRepo.GetByIdAsync(request.BloodBankId.Value))?.Name
                 : "BloodBond Foundation";
 
+            // Build success/cancel URLs from config so we can swap them per environment.
+            // If the configured value is empty, fall back to the API's own success/cancel endpoints.
+            var successUrl = !string.IsNullOrWhiteSpace(_stripe.SuccessUrl)
+                ? _stripe.SuccessUrl
+                : $"{GetApiBaseUrl()}/api/monetarydonations/success?session_id={{CHECKOUT_SESSION_ID}}";
+            var cancelUrl = !string.IsNullOrWhiteSpace(_stripe.CancelUrl)
+                ? _stripe.CancelUrl
+                : $"{GetApiBaseUrl()}/api/monetarydonations/cancel";
+
             var checkoutOptions = new Stripe.Checkout.SessionCreateOptions
             {
                 PaymentMethodTypes = new List<string> { "card" },
@@ -101,8 +114,8 @@ namespace BloodBond.BLL.Service
                     }
                 },
                 Mode = "payment",
-                SuccessUrl = "https://localhost:7000/api/monetarydonations/success?session_id={CHECKOUT_SESSION_ID}",
-                CancelUrl = "https://localhost:7000/api/monetarydonations/cancel",
+                SuccessUrl = successUrl,
+                CancelUrl = cancelUrl,
                 CustomerEmail = donor?.Email,
                 Metadata = new Dictionary<string, string>
                 {
@@ -140,6 +153,13 @@ namespace BloodBond.BLL.Service
             };
         }
 
+        private string GetApiBaseUrl()
+        {
+            var ctx = _http.HttpContext;
+            if (ctx == null) return "https://blood-bond.runasp.net";
+            return $"{ctx.Request.Scheme}://{ctx.Request.Host}";
+        }
+
         public async Task<MonetaryDonationResponse> ConfirmDonationAsync(string paymentIntentId, string status)
         {
             var donation = await _context.MonetaryDonations
@@ -174,6 +194,39 @@ namespace BloodBond.BLL.Service
         public async Task<decimal> GetTotalByDonorAsync(string donorId)
         {
             return await _donationRepo.GetTotalByDonorAsync(donorId);
+        }
+
+        public async Task<IEnumerable<MonetaryDonationResponse>> GetAllAsync()
+        {
+            var list = await _context.MonetaryDonations
+                .Include(m => m.Donor)
+                .Include(m => m.BloodBank)
+                .AsNoTracking()
+                .OrderByDescending(m => m.DonationDate)
+                .ToListAsync();
+            return list.Select(MapToResponse);
+        }
+
+        public async Task<IEnumerable<MonetaryDonationResponse>> GetByBankAsync(int bankId, string managerId)
+        {
+            var bank = await _context.BloodBanks.FirstOrDefaultAsync(b => b.Id == bankId)
+                ?? throw new KeyNotFoundException("Blood bank not found.");
+
+            // Admins can see everything; managers must own the bank.
+            var user = await _context.Users.FindAsync(managerId);
+            var isAdmin = user != null
+                && await _context.UserRoles.AnyAsync(r => r.UserId == managerId && r.RoleId == "Admin");
+            if (!isAdmin && bank.ManagerId != managerId)
+                throw new UnauthorizedAccessException("You are not the manager of this blood bank.");
+
+            var list = await _context.MonetaryDonations
+                .Include(m => m.Donor)
+                .Include(m => m.BloodBank)
+                .AsNoTracking()
+                .Where(m => m.BloodBankId == bankId)
+                .OrderByDescending(m => m.DonationDate)
+                .ToListAsync();
+            return list.Select(MapToResponse);
         }
 
         private static MonetaryDonationResponse MapToResponse(MonetaryDonation m) => new()

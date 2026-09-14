@@ -47,6 +47,19 @@ namespace BloodBond.Controllers
             return Ok(list);
         }
 
+        /// <summary>
+        /// Bank managers / admins — list active blood requests in the city
+        /// of the given blood bank so the manager can fulfil them.
+        /// </summary>
+        [HttpGet("by-bank/{bankId}")]
+        [Authorize(Roles = "BloodBankManager,Admin")]
+        public async Task<ActionResult<IEnumerable<BloodRequestResponse>>> GetByBank(int bankId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var list = await _requestService.GetForBankAsync(bankId, userId!);
+            return Ok(list);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<BloodRequestResponse>> GetById(int id)
         {

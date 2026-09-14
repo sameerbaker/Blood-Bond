@@ -18,5 +18,11 @@ namespace BloodBond.BLL.Service
 
         /// <summary>Total money donated by a user.</summary>
         Task<decimal> GetTotalByDonorAsync(string donorId);
+
+        /// <summary>Admin only — list every monetary donation in the system.</summary>
+        Task<IEnumerable<MonetaryDonationResponse>> GetAllAsync();
+
+        /// <summary>Bank manager / admin — list monetary donations directed at the given bank.</summary>
+        Task<IEnumerable<MonetaryDonationResponse>> GetByBankAsync(int bankId, string managerId);
     }
 }

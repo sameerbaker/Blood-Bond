@@ -42,14 +42,21 @@ namespace BloodBond.Extensinos
             services.AddScoped<ISeedData, RoleSeedData>();
             services.AddScoped<ISeedData, BadgeSeedData>();
 
-            // Stripe settings (bind from config)
+            // Stripe settings (bind from config). The default binder reads
+            // from appsettings.json + appsettings.{Env}.json + user-secrets
+            // (in Development) + environment variables — in that order.
+            // Adding a new key to user-secrets or env vars will simply
+            // override whatever is in appsettings.json.
             services.Configure<StripeSettings>(options =>
             {
-                var config = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
-                options.SecretKey = config["Stripe:SecretKey"] ?? "";
-                options.PublishableKey = config["Stripe:PublishableKey"] ?? "";
-                options.WebhookSecret = config["Stripe:WebhookSecret"] ?? "";
+                // No manual reading here — the default options binder
+                // already populates the properties from the merged
+                // IConfiguration. This comment is left so future
+                // contributors don't add a manual `BuildServiceProvider`
+                // (which is an anti-pattern and breaks scoped lifetimes).
             });
+            services.AddOptions<StripeSettings>()
+                .BindConfiguration("Stripe");
 
             // Mapster mappings
             MapsterConfig.RegisterMappings();

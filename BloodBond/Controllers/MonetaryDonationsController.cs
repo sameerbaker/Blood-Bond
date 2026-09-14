@@ -124,12 +124,37 @@ namespace BloodBond.Controllers
             return Ok(list);
         }
 
+        /// <summary>
+        /// Manager / admin — list monetary donations sent to a specific bank
+        /// so the manager can see who is funding them.
+        /// </summary>
+        [HttpGet("by-bank-detail/{bankId}")]
+        [Authorize(Roles = "BloodBankManager,Admin")]
+        public async Task<ActionResult<IEnumerable<MonetaryDonationResponse>>> GetByBankDetail(int bankId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var list = await _donationService.GetByBankAsync(bankId, userId!);
+            return Ok(list);
+        }
+
         [HttpGet("total/mine")]
         public async Task<ActionResult> GetMyTotal()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var total = await _donationService.GetTotalByDonorAsync(userId!);
             return Ok(new { total, currency = "USD" });
+        }
+
+        /// <summary>
+        /// Admin only — list every monetary donation in the system so the
+        /// super-admin can approve or reject Pending ones from the UI.
+        /// </summary>
+        [HttpGet("all")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<IEnumerable<MonetaryDonationResponse>>> GetAll()
+        {
+            var list = await _donationService.GetAllAsync();
+            return Ok(list);
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using BloodBond.DAL.Data;
 using BloodBond.DAL.DTO.Request;
@@ -8,6 +9,8 @@ using BloodBond.DAL.DTO.Response;
 using BloodBond.DAL.Enums;
 using BloodBond.DAL.Models;
 using BloodBond.DAL.Repository;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace BloodBond.BLL.Service
@@ -17,15 +20,30 @@ namespace BloodBond.BLL.Service
         private readonly IBloodBankRepository _bankRepo;
         private readonly IBloodInventoryRepository _inventoryRepo;
         private readonly ApplicationDbContext _context;
+        private readonly IHttpContextAccessor _http;
 
         public BloodBankService(
             IBloodBankRepository bankRepo,
             IBloodInventoryRepository inventoryRepo,
-            ApplicationDbContext context)
+            ApplicationDbContext context,
+            IHttpContextAccessor http)
         {
             _bankRepo = bankRepo;
             _inventoryRepo = inventoryRepo;
             _context = context;
+            _http = http;
+        }
+
+        // ─────────────────────────────────────────────────────────────────
+        // Returns true if the current user is an Admin OR is the manager
+        // of the given blood bank. Used to allow admins to override the
+        // ownership check on Update / SetInventory.
+        // ─────────────────────────────────────────────────────────────────
+        private bool IsAdminOrManager(string userId, string? managerId)
+        {
+            if (managerId == userId) return true;
+            var role = _http.HttpContext?.User?.FindFirst(ClaimTypes.Role)?.Value;
+            return role == "Admin";
         }
 
         public async Task<BloodBankResponse> CreateAsync(string managerId, BloodBankRequest request)
@@ -85,7 +103,7 @@ namespace BloodBond.BLL.Service
             var bank = await _bankRepo.GetByIdAsync(id)
                 ?? throw new KeyNotFoundException("Blood bank not found.");
 
-            if (bank.ManagerId != managerId)
+            if (!IsAdminOrManager(managerId, bank.ManagerId))
                 throw new UnauthorizedAccessException("You are not the manager of this blood bank.");
 
             bank.Name = request.Name;
@@ -128,23 +146,29 @@ namespace BloodBond.BLL.Service
             var bank = await _bankRepo.GetByIdAsync(id)
                 ?? throw new KeyNotFoundException("Blood bank not found.");
 
-            if (bank.ManagerId != managerId)
+            if (!IsAdminOrManager(managerId, bank.ManagerId))
                 throw new UnauthorizedAccessException("You are not the manager of this blood bank.");
 
-            var existing = await _context.BloodInventories
-                .Where(i => i.BloodBankId == id)
-                .ToListAsync();
-            _context.BloodInventories.RemoveRange(existing);
-
+            // ── Upsert inventory by (BloodBankId, BloodType) ─────────────
             foreach (var item in items)
             {
-                _context.BloodInventories.Add(new BloodInventory
+                var existing = await _context.BloodInventories
+                    .FirstOrDefaultAsync(i => i.BloodBankId == id && i.BloodType == item.BloodType);
+                if (existing != null)
                 {
-                    BloodBankId = id,
-                    BloodType = item.BloodType,
-                    UnitsAvailable = item.UnitsAvailable,
-                    LastUpdated = DateTime.UtcNow
-                });
+                    existing.UnitsAvailable = item.UnitsAvailable;
+                    existing.LastUpdated = DateTime.UtcNow;
+                }
+                else
+                {
+                    _context.BloodInventories.Add(new BloodInventory
+                    {
+                        BloodBankId = id,
+                        BloodType = item.BloodType,
+                        UnitsAvailable = item.UnitsAvailable,
+                        LastUpdated = DateTime.UtcNow
+                    });
+                }
             }
 
             await _context.SaveChangesAsync();

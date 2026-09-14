@@ -75,6 +75,33 @@ namespace BloodBond.BLL.Service
             return list.Select(MapToResponseSimple);
         }
 
+        /// <summary>
+        /// Lists active blood requests whose city matches the bank manager's
+        /// bank's city. Used by bank managers / admins to see who is asking
+        /// for blood in their area so they can fulfil the request.
+        /// </summary>
+        public async Task<IEnumerable<BloodRequestResponse>> GetForBankAsync(int bankId, string managerId)
+        {
+            var bank = await _context.BloodBanks.FirstOrDefaultAsync(b => b.Id == bankId)
+                ?? throw new KeyNotFoundException("Blood bank not found.");
+
+            // Admins can see everything in the bank's city; managers must own it.
+            var user = await _context.Users.FindAsync(managerId);
+            var isAdmin = user != null
+                && await _context.UserRoles.AnyAsync(r => r.UserId == managerId && r.RoleId == "Admin");
+            if (!isAdmin && bank.ManagerId != managerId)
+                throw new UnauthorizedAccessException("You are not the manager of this blood bank.");
+
+            // Pending or InProgress requests in the bank's city.
+            var list = await _context.BloodRequests
+                .AsNoTracking()
+                .Where(r => r.City == bank.CityAddress
+                            && (r.Status == RequestStatus.Pending || r.Status == RequestStatus.InProgress))
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
+            return list.Select(MapToResponseSimple);
+        }
+
         public async Task<BloodRequestResponse> CancelAsync(int id, string requesterId)
         {
             var entity = await _requestRepo.GetByIdAsync(id)
